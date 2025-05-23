@@ -3,7 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 app.use(cors());
 app.use(express.json());
@@ -37,6 +37,25 @@ async function run() {
 
     app.get('/tips', async (req, res) => {
         const result = await tips.find().toArray();
+        res.send(result);
+    })
+
+    app.get('/tips/public', async (req, res) => {
+        const result = await tips.find({availability: "public"}).toArray();
+        res.send(result);
+    })
+
+    app.get('/tips/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)};
+        const result = await tips.findOne(query);
+        res.send(result);
+    })
+
+    app.get('/tips/public/difficulty/:difficulty', async (req, res) => {
+        const difficulty = req.params.difficulty;
+        const query = {difficulty: difficulty, availability: "public"};
+        const result = await tips.find(query).toArray();
         res.send(result);
     })
 
