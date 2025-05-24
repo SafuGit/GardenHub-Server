@@ -31,6 +31,11 @@ async function run() {
     const tips = database.collection("tips");
     const gardenersCollection = database.collection("gardeners");
 
+    app.get('/gardeners', async (req, res) => {
+        const result = await gardenersCollection.find().toArray();
+        res.send(result);
+    })
+
     app.get('/gardeners/active', async (req, res) => {
         const query = {status: 'active'};
         const result = await gardenersCollection.find(query).limit(6).toArray();
@@ -40,6 +45,11 @@ async function run() {
     app.post('/tips', async (req, res) => {
         const newTip = req.body;
         const result = await tips.insertOne(newTip);
+        res.send(result);
+    })
+
+    app.get('/tips/6', async (req, res) => {
+        const result = await tips.find({availability: "public"}).limit(6).toArray();
         res.send(result);
     })
 
