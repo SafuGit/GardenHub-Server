@@ -53,6 +53,17 @@ async function run() {
         res.send(result);
     })
 
+    app.put('/tips/like/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)};
+        const result = await tips.updateOne(query, {
+            $inc: {
+                totalLikes: 1
+            }
+        });
+        res.send(result);
+    })
+
     app.get('/tips', async (req, res) => {
         const result = await tips.find().toArray();
         res.send(result);
