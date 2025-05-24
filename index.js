@@ -4,6 +4,7 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const gardeners = require('./data');
 
 app.use(cors());
 app.use(express.json());
@@ -28,6 +29,13 @@ async function run() {
 
     const database = client.db("gardenhub");
     const tips = database.collection("tips");
+    const gardenersCollection = database.collection("gardeners");
+
+    app.get('/gardeners/active', async (req, res) => {
+        const query = {status: 'active'};
+        const result = await gardenersCollection.find(query).limit(6).toArray();
+        res.send(result);
+    })
 
     app.post('/tips', async (req, res) => {
         const newTip = req.body;
@@ -70,6 +78,18 @@ async function run() {
         const id = req.params.id;
         const query = {_id: new ObjectId(id)};
         const result = await tips.deleteOne(query);
+        res.send(result);
+    })
+
+    app.put('/tips/:id', async (req, res) => {
+        const id = req.params.id;
+        const filter = {_id: new ObjectId(id)};
+        const options = { upsert: true };
+        const updatedTip = req.body;
+        const updatedDoc = {
+            $set: updatedTip,
+        }
+        const result = await tips.updateOne(filter, updatedDoc, options);
         res.send(result);
     })
 
