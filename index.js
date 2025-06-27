@@ -42,6 +42,13 @@ async function run() {
         res.send(result);
     })
 
+    app.get('/gardeners/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)};
+        const result = await gardenersCollection.findOne(query);
+        res.send(result);
+    })
+
     app.post('/tips', async (req, res) => {
         const newTip = req.body;
         const result = await tips.insertOne(newTip);
