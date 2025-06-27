@@ -49,6 +49,19 @@ async function run() {
         res.send(result);
     })
 
+    app.get('gardenSort/:sortBy', async (req, res) => {
+        const sortBy = req.params.sortBy;
+        if (sortBy === 'asc') {
+            const result = await gardenersCollection.find().sort({name: 1}).toArray();
+            res.send(result);
+        } else if (sortBy === 'desc') {
+            const result = await gardenersCollection.find().sort({name: -1}).toArray();
+            res.send(result);
+        } else {
+            res.status(400).send({error: "Invalid sort parameter"});
+        }
+    })
+
     app.post('/tips', async (req, res) => {
         const newTip = req.body;
         const result = await tips.insertOne(newTip);
