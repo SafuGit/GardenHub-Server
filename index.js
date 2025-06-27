@@ -62,6 +62,24 @@ async function run() {
         }
     })
 
+    app.get('/gardenFilter/age', async (req, res) => {
+        const age = req.query.age;
+        let query = {};
+
+        if (age === 'under30') {
+            query.age = { $lt: 30 };
+        } else if (age === '30to39') {
+            query.age = { $gte: 30, $lte: 39 };
+        } else if (age === '40to49') {
+            query.age = { $gte: 40, $lte: 49 };
+        } else if (age === '50plus') {
+            query.age = { $gte: 50 };
+        }
+
+        const result = await gardenersCollection.find(query).toArray();
+        res.send(result);
+    })
+
     app.post('/tips', async (req, res) => {
         const newTip = req.body;
         const result = await tips.insertOne(newTip);
