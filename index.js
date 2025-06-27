@@ -49,7 +49,7 @@ async function run() {
         res.send(result);
     })
 
-    app.get('gardenSort/:sortBy', async (req, res) => {
+    app.get('/gardenSort/:sortBy', async (req, res) => {
         const sortBy = req.params.sortBy;
         if (sortBy === 'asc') {
             const result = await gardenersCollection.find().sort({name: 1}).toArray();
